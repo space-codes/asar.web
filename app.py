@@ -46,12 +46,12 @@ def home():
     ''' The home naviagion option.
 
     If a user is not logged in, show Login screen.
-    else show the Hub.
+    else show the Home.
     '''
     if not session.get('logged_in'):
         return render_template('login.html')
     else:
-        return hub()
+        return home()
 
 # Login / Signup ------------------------------------------------------------
 @app.route('/login', methods=['POST'])
@@ -125,7 +125,7 @@ def create_user():
             if not os.path.exists('static/users/{}'.format(user.username)):
                 os.makedirs('static/users/{}'.format(user.username))
             login_user(user)
-            return render_template('hub.html')
+            return render_template('home.html')
         else:
             return (render_template('signup.html', password=False))
     else:
@@ -133,13 +133,13 @@ def create_user():
     return 'ok'
 
 # Hub page ------------------------------------------------------------------
-@app.route('/hub')
+@app.route('/home')
 @login_required
-def hub():
+def home():
     '''Retrieve a users predictions and load the Hub page.
     '''
     zipped = get_images()
-    return render_template('hub.html', zipped=zipped)
+    return render_template('home.html', zipped=zipped)
 
 def get_images():
     '''Load the currently logged in users prediction history.

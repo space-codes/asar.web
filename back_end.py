@@ -3,6 +3,7 @@ from tensorflow.keras.preprocessing.image import img_to_array
 from phoc_label_generator import phoc_generate_label
 from utils import similarity, get_all_transcripts
 from segmentation import multi_line_ext, words_extract
+from tensorflow_addons.layers import SpatialPyramidPooling2D
 import numpy as np
 import uuid
 import cv2
@@ -15,7 +16,7 @@ import tensorflow as tf
 
 
 global model
-model = load_model('model/phoc-model.h5')
+model = load_model('model/phoc-model.h5', custom_objects={'SpatialPyramidPooling2D': SpatialPyramidPooling2D})
 
 def classify(img):
     ''' Classify a single word

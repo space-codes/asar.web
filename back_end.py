@@ -34,7 +34,8 @@ def classify(img):
     y_pred = np.squeeze(model.predict(img))
     out = ''
     mx = 0
-    for k in get_all_transcripts:
+    transcripts = get_all_transcripts()
+    for k in transcripts:
         temp = similarity(y_pred, phoc_generate_label(k))
         if temp > mx:
             mx = temp

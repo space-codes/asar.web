@@ -65,12 +65,12 @@ def words_extract(line):
 def multi_line_ext(img):
     thresh = gaus_thresh(img)
     dilation = morphological_operation(thresh)
-    (contours1, _) = cv2.findContours(dilation, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-    contours1 = list(contours1)
-    contours1.reverse()
+    (contours, _) = cv2.findContours(dilation, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    contours = list(contours)
+    contours.reverse()
 
     lines = []
-    for cnt in contours1:
+    for cnt in contours:
         area = cv2.contourArea(cnt)
         if area > 30000:
             x, y, w, h = cv2.boundingRect(cnt)

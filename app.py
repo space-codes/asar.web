@@ -42,7 +42,7 @@ def load_user(user_id):
     return res
 
 @app.route('/')
-def home():
+def hub():
     ''' The home naviagion option.
 
     If a user is not logged in, show Login screen.
@@ -228,14 +228,12 @@ def predict():
 
     return result
 
-def save_pred(path, result):
+def save_pred(result):
     '''Saves the prediction to the users file.
 
     Args:
-        path: the loaction to save the image
         result: the result of the prediction
     '''
-    path = 'static/users/{}'.format(session['user'])
     save_loc = save_thumbnail(session['user'], cv2.imread('static/users/{}/temp.png'.format(session['user'])))
     os.remove('static/users/{}/temp.png'.format(session['user']))
     create_prediction(save_loc, result)

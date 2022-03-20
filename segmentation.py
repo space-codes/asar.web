@@ -60,6 +60,7 @@ def words_extract(line):
         #cv2.imwrite(newpath + '/line' + str(i) + '_word' + str(cnt_j) + '.jpg', crop_word)
         #cnt_j += 1
         words.append(crop_word)
+    return words
 
 def multi_line_ext(img):
     thresh = gaus_thresh(img)
@@ -78,6 +79,7 @@ def multi_line_ext(img):
             # cv2.rectangle(imgcpy2, (x-1, y-5), (x + w, y + h), (randint(0, 255), randint(0, 255), randint(0, 255)), 5)
             #segment(line)
             lines.append(line)
+    return lines
     #cv2.imwrite('data5/imgContoure.png', imgcpy2)
 
 

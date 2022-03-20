@@ -74,7 +74,6 @@ function getPrediction() {
 
     var canvasObj = document.getElementById("canvas");
     var img = canvasObj.toDataURL();
-    var networkType = document.getElementById("networkSelect").value;
     $.ajax({
         type: "POST",
         url: "/predict/",
@@ -88,14 +87,8 @@ function getPrediction() {
 }
 // Make a predciton
 function predict() {
-    var networkType = document.getElementById("networkSelect").value;
-    if (networkType != "none") {
-        document.getElementById("loader").style.display = "block";
-        setNetwork();
-        getPrediction();
-    } else {
-        window.alert("Select a network type first.");
-    }
+    document.getElementById("loader").style.display = "block";
+    getPrediction();
 }
 // Save an image
 function saveTheImage() {

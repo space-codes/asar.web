@@ -23,6 +23,8 @@ engine = create_engine('sqlite:///asar.db', echo=True)
 Session = sessionmaker(bind=engine)
 s = Session()
 app = Flask(__name__)
+app.secret_key = 'SUPER SCRET KEY FOR ASSAR PROJECT'
+app.config['SESSION_TYPE'] = 'filesystem'
 login_manager.init_app(app)
 
 #LoginManager

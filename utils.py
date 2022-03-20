@@ -4,6 +4,7 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy import *
 from back_end import *
 from numpy import linalg as LA
+import numpy as np
 
 global s
 Session = sessionmaker(bind=engine)
@@ -49,4 +50,5 @@ def get_all_transcripts():
     Session = sessionmaker(bind=engine)
     s = Session()
     transcripts = s.query(Corpus).with_entities(Corpus.word).all()
+    transcripts = [row[0] for row in transcripts]
     return transcripts

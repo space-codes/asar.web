@@ -1,14 +1,11 @@
-#!/usr/bin/python
-# -*- coding: utf-8 -*-
 from sqlalchemy import *
 from sqlalchemy import create_engine, ForeignKey
-from sqlalchemy import Column, Date, Integer, String
+from sqlalchemy import Column, Integer, String
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import relationship, backref, sessionmaker
-from flask_login import LoginManager, UserMixin, login_required, \
-    login_user, logout_user
-from werkzeug.security import generate_password_hash, \
-    check_password_hash
+from sqlalchemy.orm import sessionmaker
+from flask_login import UserMixin
+from werkzeug.security import generate_password_hash
+
 engine = create_engine('sqlite:///asar.db', echo=True)
 Base = declarative_base()
 
@@ -38,6 +35,7 @@ class User(Base, UserMixin):
         query = s.query(User).filter(User.username == userID).all()
         user = User(query)
         print(user)
+        s.close()
         return user
 
     def get_id(self):
@@ -88,15 +86,8 @@ def result_query():
     list_result = []
     for r in res:
         list_result.append(r[0])
+    s.close()
     print(list_result)
-
-
-def image_query():
-    Session = sessionmaker(bind=engine)
-    s = Session()
-    res = s.query(User.id).filter(User.username == user.username)
-    for r in res:
-        identity = r.id
 
 
 def query():
@@ -106,6 +97,7 @@ def query():
     for r in res:
         identity = r.id
         print(identity)
+    s.close()
 
 
 def query_filename():
@@ -115,7 +107,7 @@ def query_filename():
             == '1')
     for i in image_filename:
         print(i)
-
+    s.close()
 
 # query()
 # query_filename()

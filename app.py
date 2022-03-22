@@ -229,7 +229,7 @@ def predict():
     convertImage(img_data, path)
     result = str(get_result(path + '/temp.png'))
     if session['user'] != 'guest':
-        save_pred(path + '/temp.png', result)
+        save_pred(result)
 
     return result
 

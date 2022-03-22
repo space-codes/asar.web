@@ -44,11 +44,14 @@ def ok(username):
         identity = r.username
     if identity == username:
         print('ok')
+    s.close()
+
 
 def get_all_transcripts():
-    engine = create_engine('sqlite:///asar.db', echo=True)
-    Session = sessionmaker(bind=engine)
-    s = Session()
+    #engine = create_engine('sqlite:///asar.db', echo=True)
+    #Session = sessionmaker(bind=engine)
+    #s = Session()
     transcripts = s.query(Corpus).with_entities(Corpus.word).all()
     transcripts = [row[0] for row in transcripts]
+    s.close()
     return transcripts

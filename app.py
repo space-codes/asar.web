@@ -1,6 +1,5 @@
 from flask import Flask, flash, redirect, render_template, request, session, abort
 from flask_login import LoginManager, UserMixin, login_required, login_user, logout_user
-from imageio import imsave, imread
 from werkzeug.utils import secure_filename
 from back_end import *
 import codecs
@@ -39,6 +38,7 @@ def load_user(user_id):
         res: The user where user.user_id == user_id.
     '''
     res = s.query(User).filter(User.username == user_id).first()
+    s.close()
     return res
 
 @app.route('/')
@@ -70,9 +70,10 @@ def do_admin_login():
             session['user'] = POST_USERNAME
             user = load_user(POST_USERNAME)
             login_user(user)
+            s.close()
     else:
         return (render_template('login.html', password=False))
-    return home()
+    return hub()
 
 @app.route('/logout')
 @login_required
@@ -81,10 +82,10 @@ def logout():
 
     Logs a user out of the application and shows the login screen.
     '''
+    logout_user()
     session['logged_in'] = False
     session['user'] = ''
-    logout_user()
-    return home()
+    return hub()
 
 @app.route('/signup')
 def signup():
@@ -125,6 +126,7 @@ def create_user():
             if not os.path.exists('static/users/{}'.format(user.username)):
                 os.makedirs('static/users/{}'.format(user.username))
             login_user(user)
+            s.close()
             return render_template('home.html')
         else:
             return (render_template('signup.html', password=False))
@@ -160,6 +162,7 @@ def get_images():
     zipped = [list(a) for a in zip(list_result, all_images)]
     print(zipped)
     zipped = reversed(zipped)
+    s.close()
     return zipped
 
 @app.route('/download_result/', methods=['GET','POST'])
@@ -175,6 +178,7 @@ def download_result():
     for res in result:
         print(res)
     loc = 'static/users/{}/result.txt'.format(session['user'])
+    s.close()
     return res[0]
 
 @app.route('/delete_result/', methods=['POST'])
@@ -185,6 +189,7 @@ def delete_result():
     prediction_id = prediction_id.decode("utf-8")
     s.query(Prediction).filter(Prediction.id == prediction_id).delete()
     s.commit()
+    s.close()
     return(home())
 
 # Prediction Page ------------------------------------------------------------
@@ -224,7 +229,7 @@ def predict():
     convertImage(img_data, path)
     result = str(get_result(path + '/temp.png'))
     if session['user'] != 'guest':
-        save_pred(path + '/temp.png', result)
+        save_pred(result)
 
     return result
 
@@ -252,6 +257,7 @@ def create_prediction(loc, result):
     pred = Prediction(identity, loc, result)
     s.add(pred)
     s.commit()
+    s.close()
 
 @app.route('/uploader', methods = ['GET', 'POST'])
 def upload_file():

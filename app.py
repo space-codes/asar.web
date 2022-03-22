@@ -1,4 +1,5 @@
 from flask import Flask, flash, redirect, render_template, request, session, abort
+from flask_swagger_ui import get_swaggerui_blueprint
 from flask_login import LoginManager, UserMixin, login_required, login_user, logout_user
 from werkzeug.utils import secure_filename
 from back_end import *
@@ -25,6 +26,18 @@ app = Flask(__name__)
 app.secret_key = 'SUPER SCRET KEY FOR ASSAR PROJECT'
 app.config['SESSION_TYPE'] = 'filesystem'
 login_manager.init_app(app)
+
+### swagger specific ###
+SWAGGER_URL = '/api/docs'
+API_URL = '/static/swagger.json'
+SWAGGERUI_BLUEPRINT = get_swaggerui_blueprint(
+    SWAGGER_URL,
+    API_URL,
+    config={
+        'app_name': "ASAR project"
+    }
+)
+app.register_blueprint(SWAGGERUI_BLUEPRINT, url_prefix=SWAGGER_URL)
 
 #LoginManager
 @login_manager.user_loader

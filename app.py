@@ -54,6 +54,17 @@ def load_user(user_id):
     s.close()
     return res
 
+# Set the type of network being used
+@app.route('/setNetwork/',methods=['GET','POST'])
+def setNetwork():
+    '''Set the network to make the prediciton.
+    Returns:
+        The type of network to be used.
+    '''
+    data = request.get_data()
+    set_network(str(data))
+    return(data)
+
 @app.route('/')
 def hub():
     ''' The home naviagion option.
@@ -72,7 +83,7 @@ def do_admin_login():
     '''Log a user into the application.
     if username and password match, log into the application.
 
-    else call home().
+    else call hub().
     '''
     POST_USERNAME = str(request.form['username'])
     POST_PASSWORD = str(request.form['password'])

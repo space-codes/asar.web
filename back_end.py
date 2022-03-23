@@ -1,7 +1,7 @@
 from tensorflow.keras.models import load_model
 from tensorflow.keras.preprocessing.image import img_to_array
 from phoc_label_generator import phoc_generate_label
-from utils import similarity, get_all_transcripts
+from utils import similarity, get_all_transcripts, get_comb_label, build_phosc_model
 from segmentation import multi_line_ext, words_extract
 from tensorflow_addons.layers import SpatialPyramidPooling2D
 import numpy as np
@@ -13,12 +13,36 @@ import tensorflow as tf
 '''This module is the main back-end, which handles classification and
     word/character extraction.
 '''
+#global load_phosc_model
+# load_phosc_model = False
+
+#global model
+#if load_phosc_model:
+#    model = build_phosc_model()
+#    model.load_weights('model/phosc-model.h5')
+#else:
+#    model = load_model('model/phoc-model.h5', custom_objects={'SpatialPyramidPooling2D': SpatialPyramidPooling2D})
 
 
-global model
-model = load_model('model/phoc-model.h5', custom_objects={'SpatialPyramidPooling2D': SpatialPyramidPooling2D})
+def set_network(network_type):
+    '''Sets the current network to the type specifed
+    Args:
+        networkType: The type of classificaiton to be done
+    '''
 
-def classify(img):
+    network_type = network_type.replace("'", '')
+    network_type = network_type.strip('b')
+    global model
+    global load_phosc_model
+    if network_type == 'phoc':
+        model = load_model('model/phoc-model.h5', custom_objects={'SpatialPyramidPooling2D': SpatialPyramidPooling2D})
+        load_phosc_model = False
+    if network_type == 'phosc':
+        model = build_phosc_model()
+        model.load_weights('model/phosc-model.h5')
+        load_phosc_model = True
+
+def classify(img, transcripts):
     ''' Classify a single word
         To make a prediction
 
@@ -34,9 +58,38 @@ def classify(img):
     y_pred = np.squeeze(model.predict(img))
     out = ''
     mx = 0
-    transcripts = get_all_transcripts()
     for k in transcripts:
         temp = similarity(y_pred, phoc_generate_label(k))
+        if temp > mx:
+            mx = temp
+            out = k
+    return out
+
+def classify(img, transcripts, is_phosc = False):
+    ''' Classify a single word
+        To make a prediction
+
+    Args:
+        img: The image to be classified
+    Returns:
+        out: The prediciton
+    '''
+
+    img = img_to_array(img)
+    img = tf.image.resize(img, [110, 110])
+    img = np.expand_dims(img, axis=0)
+    if is_phosc:
+        y_pred=model.predict(img)
+        y_pred=np.squeeze(np.concatenate((y_pred[0],y_pred[1]),axis=1))
+    else:
+        y_pred = np.squeeze(model.predict(img))
+    out = ''
+    mx = 0
+    for k in transcripts:
+        if is_phosc:
+            temp = similarity(y_pred, get_comb_label(k))
+        else:
+            temp = similarity(y_pred, phoc_generate_label(k))
         if temp > mx:
             mx = temp
             out = k
@@ -56,16 +109,19 @@ def get_result(path):
     Returns:
         result: the classified string
     '''
-
+    output = ''
     img = cv2.imread(path)
+    if np.mean(img) == 255:
+        output = ''
+    transcripts = get_all_transcripts()
     lines = multi_line_ext(img)
     for line in lines:
-        output = ''
         arr = words_extract(line)
         if line != []:
             for a in arr:
-                res = classify(a)
-                output += res
+                res = classify(a, transcripts, is_phosc=load_phosc_model)
+                output += ' ' + res
+            output += '\n'
     if output == '':
         output = 'Classification error'
     return output
@@ -110,3 +166,22 @@ def save_thumbnail(user, img):
     newname = uuid.uuid4()
     cv2.imwrite('static/users/{}/{}.png'.format(user, newname), img)
     return 'static/users/{}/{}.png'.format(user, newname)
+
+
+# img = cv2.imread('image.png')
+# transcripts = get_all_transcripts()
+# lines = multi_line_ext(img)
+# output = ''
+# for line in lines:
+#     output = ''
+#     arr = words_extract(line)
+#     if line != []:
+#         for a in arr:
+#             res = classify(a, transcripts, is_phosc=load_phosc_model)
+#             output += ' ' + res
+
+
+# img = cv2.imread('index.jpg')
+# transcripts = get_all_transcripts()
+# res = classify(img, transcripts, is_phosc=load_phosc_model)
+# print(res)

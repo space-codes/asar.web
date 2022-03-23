@@ -2,7 +2,7 @@ import cv2
 import numpy as np
 from random import randint
 import preprocessing
-from preprocessing import morphological_operation,gaus_thresh
+from preprocessing import morphological_operation,gaus_thresh, resize
 import os
 
 
@@ -63,6 +63,7 @@ def words_extract(line):
     return words
 
 def multi_line_ext(img):
+    img = resize(img)
     thresh = gaus_thresh(img)
     dilation = morphological_operation(thresh)
     (contours, _) = cv2.findContours(dilation, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)

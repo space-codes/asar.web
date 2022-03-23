@@ -2,9 +2,16 @@ from table_def import *
 import os
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import *
-from back_end import *
+#from back_end import *
 from numpy import linalg as LA
 import numpy as np
+from tensorflow.keras import backend as K
+from tensorflow.keras import Model
+from tensorflow.keras.layers import Dense, Dropout, MaxPooling2D, Flatten, Input, Conv2D
+from tensorflow_addons.layers import SpatialPyramidPooling2D
+from phoc_label_generator import phoc_generate_label
+from phos_label_generator import phos_generate_label
+import cv2
 
 global s
 Session = sessionmaker(bind=engine)
@@ -14,6 +21,11 @@ s = Session()
 # Cosine simialirity * 1000
 def similarity(x, y):
     return 1000 * np.dot(x, y) / (LA.norm(x) * LA.norm(y))
+
+def get_comb_label(x):
+    phos_labels=phos_generate_label(x)
+    phoc_labels=phoc_generate_label(x)
+    return np.concatenate((phos_labels,phoc_labels),axis=0)
 
 '''
 save image as a thumbnail
@@ -55,3 +67,44 @@ def get_all_transcripts():
     transcripts = [row[0] for row in transcripts]
     s.close()
     return transcripts
+
+
+def build_phosc_model():
+    if K.image_data_format() == 'channels_first':
+        input_shapes = (3, 110, 110)
+    else:
+        input_shapes = (110, 110, 3)
+    inp = Input(shape=input_shapes)
+    model = Conv2D(64, (3, 3), padding='same', activation='relu')(inp)
+    model = Conv2D(64, (3, 3), padding='same', activation='relu')(model)
+    model = (MaxPooling2D(pool_size=(2, 2), strides=2))(model)
+    model = (Conv2D(128, (3, 3), padding='same', activation='relu'))(model)
+    model = (Conv2D(128, (3, 3), padding='same', activation='relu'))(model)
+    model = (MaxPooling2D(pool_size=(2, 2), strides=2))(model)
+    model = (Conv2D(256, (3, 3), padding='same', activation='relu'))(model)
+    model = (Conv2D(256, (3, 3), padding='same', activation='relu'))(model)
+    model = (Conv2D(256, (3, 3), padding='same', activation='relu'))(model)
+    model = (Conv2D(256, (3, 3), padding='same', activation='relu'))(model)
+    model = (Conv2D(256, (3, 3), padding='same', activation='relu'))(model)
+    model = (Conv2D(256, (3, 3), padding='same', activation='relu'))(model)
+    model = (Conv2D(512, (3, 3), padding='same', activation='relu'))(model)
+    model = (Conv2D(512, (3, 3), padding='same', activation='relu'))(model)
+    model = (Conv2D(512, (3, 3), padding='same', activation='relu'))(model)
+    model = (SpatialPyramidPooling2D([1, 2, 4]))(model)
+    model = (Flatten())(model)
+
+    # PHOS component
+    phosnet_op = Dense(4096, activation='relu')(model)
+    phosnet_op = Dropout(0.5)(phosnet_op)
+    phosnet_op = Dense(4096, activation='relu')(phosnet_op)
+    phosnet_op = Dropout(0.5)(phosnet_op)
+    phosnet_op = Dense(270, activation='relu', name="phosnet")(phosnet_op)
+
+    # PHOC component
+    phocnet = Dense(4096, activation='relu')(model)
+    phocnet = Dropout(0.5)(phocnet)
+    phocnet = Dense(4096, activation='relu')(phocnet)
+    phocnet = Dropout(0.5)(phocnet)
+    phocnet = Dense(830, activation='sigmoid', name="phocnet")(phocnet)
+    model = Model(inputs=inp, outputs=[phosnet_op, phocnet])
+    return model

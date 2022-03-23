@@ -72,7 +72,7 @@ def do_admin_login():
     '''Log a user into the application.
     if username and password match, log into the application.
 
-    else call home().
+    else call hub().
     '''
     POST_USERNAME = str(request.form['username'])
     POST_PASSWORD = str(request.form['password'])

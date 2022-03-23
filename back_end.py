@@ -91,18 +91,19 @@ def get_result(path):
     Returns:
         result: the classified string
     '''
-
+    output = ''
     img = cv2.imread(path)
+    if np.mean(img) == 255:
+        output = ''
     transcripts = get_all_transcripts()
     lines = multi_line_ext(img)
-    output = ''
     for line in lines:
-        output = ''
         arr = words_extract(line)
         if line != []:
             for a in arr:
                 res = classify(a, transcripts, is_phosc=load_phosc_model)
                 output += ' ' + res
+            output += '\n'
     if output == '':
         output = 'Classification error'
     return output

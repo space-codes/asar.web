@@ -13,16 +13,34 @@ import tensorflow as tf
 '''This module is the main back-end, which handles classification and
     word/character extraction.
 '''
-global load_phosc_model
-load_phosc_model = False
+#global load_phosc_model
+# load_phosc_model = False
 
-global model
-if load_phosc_model:
-    model = build_phosc_model()
-    model.load_weights('model/phosc-model.h5')
-else:
-    model = load_model('model/phoc-model.h5', custom_objects={'SpatialPyramidPooling2D': SpatialPyramidPooling2D})
+#global model
+#if load_phosc_model:
+#    model = build_phosc_model()
+#    model.load_weights('model/phosc-model.h5')
+#else:
+#    model = load_model('model/phoc-model.h5', custom_objects={'SpatialPyramidPooling2D': SpatialPyramidPooling2D})
 
+
+def set_network(network_type):
+    '''Sets the current network to the type specifed
+    Args:
+        networkType: The type of classificaiton to be done
+    '''
+
+    network_type = network_type.replace("'", '')
+    network_type = network_type.strip('b')
+    global model
+    global load_phosc_model
+    if network_type == 'phoc':
+        model = load_model('model/phoc-model.h5', custom_objects={'SpatialPyramidPooling2D': SpatialPyramidPooling2D})
+        load_phosc_model = False
+    if network_type == 'phosc':
+        model = build_phosc_model()
+        model.load_weights('model/phosc-model.h5')
+        load_phosc_model = True
 
 def classify(img, transcripts):
     ''' Classify a single word

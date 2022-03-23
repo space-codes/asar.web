@@ -69,6 +69,22 @@ function downloadTheResult() {
     }
 }
 
+// Set the type of classification
+function setNetwork() {
+
+    var networkType = document.getElementById("networkSelect").value
+    if (networkType != "none") {
+        $.ajax({
+            type: "POST",
+            url: "/setNetwork/",
+            data: networkType,
+            success: function(response) {
+                console.log(response);
+            }
+        });
+    }
+}
+
 // Make a prediction
 function getPrediction() {
 
@@ -87,8 +103,14 @@ function getPrediction() {
 }
 // Make a predciton
 function predict() {
-    document.getElementById("loader").style.display = "block";
-    getPrediction();
+    var networkType = document.getElementById("networkSelect").value;
+    if (networkType != "none") {
+        document.getElementById("loader").style.display = "block";
+        setNetwork();
+        getPrediction();
+    } else {
+        window.alert("Select a network type first.");
+    }
 }
 // Save an image
 function saveTheImage() {

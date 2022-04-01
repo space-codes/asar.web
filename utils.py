@@ -105,6 +105,6 @@ def build_phosc_model():
     phocnet = Dropout(0.5)(phocnet)
     phocnet = Dense(4096, activation='relu')(phocnet)
     phocnet = Dropout(0.5)(phocnet)
-    phocnet = Dense(830, activation='sigmoid', name="phocnet")(phocnet)
+    phocnet = Dense(730, activation='sigmoid', name="phocnet")(phocnet)
     model = Model(inputs=inp, outputs=[phosnet_op, phocnet])
     return model

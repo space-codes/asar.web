@@ -340,6 +340,8 @@ with app.test_request_context():
     spec.path(view=api_user_register)
     spec.path(view=api_user_logout)
     spec.path(view=api_predict)
+    spec.path(view=api_delete_result)
+    spec.path(view=api_prediction)
     spec.path(view=api_home)
     pass
 

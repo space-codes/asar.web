@@ -1,4 +1,4 @@
-from table_def import *
+from models import *
 import os
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import *

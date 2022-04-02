@@ -4,7 +4,7 @@ from sqlalchemy import Column, Integer, String
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from flask_login import UserMixin
-from werkzeug.security import generate_password_hash
+from werkzeug.security import generate_password_hash, check_password_hash
 
 engine = create_engine('sqlite:///asar.db', echo=True)
 Base = declarative_base()
@@ -44,6 +44,16 @@ class User(Base, UserMixin):
     def set_password(self, password):
         self.password = generate_password_hash(password)
 
+    @property
+    def token(self) -> str:
+        return self.token_hash
+
+    @token.setter
+    def token(self, token: str):
+        self.token_hash = generate_password_hash(token)
+
+    def verify_token(self, token) -> bool:
+        return check_password_hash(self.token_hash, token)
 
 class Prediction(Base, UserMixin):
 

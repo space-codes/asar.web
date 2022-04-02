@@ -6,13 +6,46 @@ from back_end import *
 import codecs
 import cv2
 from sqlalchemy.orm import sessionmaker
-from table_def import *
+from models import *
 from sqlalchemy.inspection import inspect
 from utils import save_image
 from werkzeug.security import generate_password_hash, \
      check_password_hash
 import os
 import re
+from apispec import APISpec
+from apispec.ext.marshmallow import MarshmallowPlugin
+from apispec_webframeworks.flask import FlaskPlugin
+from marshmallow import Schema, fields
+from flask import Flask, abort, request, make_response, jsonify
+import json
+from api import api as api_blueprint
+from api import *
+
+# Swagger API Docs Auto generation
+spec = APISpec(
+    title="ASAR API",
+    version="1.0.0",
+    openapi_version="3.0.2",
+    info=dict(
+        description="This is ASAR swagger api documentation",
+        version="1.0.0",
+        contact=dict(
+            email="aboelkassem.me@gmail.com"
+            ),
+        license=dict(
+            name="Apache 2.0",
+            url='http://www.apache.org/licenses/LICENSE-2.0.html'
+            )
+        ),
+    servers=[
+        dict(
+            description="ASAR server",
+            url="http://127.0.0.1:5000"
+            )
+        ],
+    plugins=[FlaskPlugin(), MarshmallowPlugin()],
+)
 
 ''' This handles the setup of the web application. All client requests are
 routed through this module to
@@ -38,32 +71,22 @@ SWAGGERUI_BLUEPRINT = get_swaggerui_blueprint(
     }
 )
 app.register_blueprint(SWAGGERUI_BLUEPRINT, url_prefix=SWAGGER_URL)
+app.register_blueprint(api_blueprint, url_prefix="/api")
 
 #LoginManager
 @login_manager.user_loader
-def load_user(user_id):
+def load_user(username):
     '''Load a user from the database using a user_id.
 
     Args:
-        user_id: The id of the user to be found.
+        username: The id of the user to be found.
 
     Returns:
         res: The user where user.user_id == user_id.
     '''
-    res = s.query(User).filter(User.username == user_id).first()
+    res = s.query(User).filter(User.username == username).first()
     s.close()
     return res
-
-# Set the type of network being used
-@app.route('/setNetwork/',methods=['GET','POST'])
-def setNetwork():
-    '''Set the network to make the prediciton.
-    Returns:
-        The type of network to be used.
-    '''
-    data = request.get_data()
-    set_network(str(data))
-    return(data)
 
 @app.route('/')
 def hub():
@@ -71,6 +94,7 @@ def hub():
 
     If a user is not logged in, show Login screen.
     else show the Home.
+
     '''
     if not session.get('logged_in'):
         return render_template('login.html')
@@ -304,7 +328,20 @@ def save_result():
     path = 'static/users/{}'.format(user)
     save_image(user, img_data, path)
 
-
 if __name__ == "__main__":
     app.secret_key = os.urandom(12)
     app.run( host='0.0.0.0', port=5000)
+
+
+# Since path inspects the view and its route,
+# we need to be in a Flask request context
+with app.test_request_context():
+    spec.path(view=api_user_login)
+    spec.path(view=api_user_register)
+    spec.path(view=api_user_logout)
+    spec.path(view=api_home)
+    pass
+
+# We're good to go! Save this to a file for now.
+with open('static/swagger.json', 'w') as f:
+    json.dump(spec.to_dict(), f)

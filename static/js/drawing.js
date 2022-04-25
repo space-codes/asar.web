@@ -80,17 +80,17 @@
 
                 img.onload = function() {
 
-                    if (img.width > img.height) {
-                        if (img.width > MAX_WIDTH) {
-                            img.height *= MAX_WIDTH / img.width;
-                            img.width = MAX_WIDTH;
-                        }
-                    } else {
-                        if (img.height > MAX_HEIGHT) {
-                            img.width *= MAX_HEIGHT / img.height;
-                            img.height = MAX_HEIGHT;
-                        }
-                    }
+                    // if (img.width > img.height) {
+                    //     if (img.width > MAX_WIDTH) {
+                    //         img.height *= MAX_WIDTH / img.width;
+                    //         img.width = MAX_WIDTH;
+                    //     }
+                    // } else {
+                    //     if (img.height > MAX_HEIGHT) {
+                    //         img.width *= MAX_HEIGHT / img.height;
+                    //         img.height = MAX_HEIGHT;
+                    //     }
+                    // }
                     context.clearRect(0, 0, canvas.width, canvas.height);
                     canvas.width = img.width;
                     canvas.height = img.height;
@@ -99,6 +99,12 @@
                 img.src = event.target.result;
             }
             reader.readAsDataURL(e.target.files[0]);
+            // // const url = URL.createObjectURL(e.target.files[0])
+            // var canvas = document.getElementById('canvas');
+            // createImageBitmap(e.target.files[0]).then(imageBitmap => {
+            //     console.log(imageBitmap);
+            //     canvas.getContext('2d').drawImage(imageBitmap, 0, 0)
+            // })
             context.lineWidth = 3;
         }
     }

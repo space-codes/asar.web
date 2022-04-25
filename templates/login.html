@@ -2,10 +2,9 @@
 <p>You're logged in already!</p>
 {% else %}
 
-
-<form action="/login" method="POST">
-    <div class="login">
-        <div class="login-screen">
+<div class="login">
+    <div class="login-screen">
+        <form action="/login" method="POST">
             <div class="app-title">
                 <h1>Login</h1>
             </div>
@@ -19,23 +18,22 @@
                     <label class="login-field-icon fui-lock" for="login-pass"></label>
                 </div>
                 <input type="submit" value="Log in" class="btn btn-primary btn-large btn-block">
-</form>
-</div>
-<p>
-    <form action="/signup">
-        <input type="submit" value="Sign up" class="btn btn-primary btn-large btn-block">
-    </form>
-    <p>
+            </div>
+        </form>
+        <form action="/signup">
+            <input type="submit" value="Sign up" class="btn btn-primary btn-large btn-block">
+        </form>
+
         <form action="/guest">
             <input type="submit" value="Guest" class="btn btn-primary btn-large btn-block">
         </form>
-        </div>
-        </div>
+    </div>
+</div>
 
-        {% if password == False %}
-        <script type="text/javascript">
-            passwordField = document.getElementById("password");
-            passwordField.placeholder = "invalid username/password";
-            passwordField.classList.add('formInvalid');
-        </script>
-        {% endif %} {% endif %} {% endblock %}
+{% if password == False %}
+<script type="text/javascript">
+    passwordField = document.getElementById("password");
+    passwordField.placeholder = "invalid username/password";
+    passwordField.classList.add('formInvalid');
+</script>
+{% endif %} {% endif %} {% endblock %}

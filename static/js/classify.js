@@ -56,7 +56,7 @@ function getCroppedArea() {
 function downloadTheResult() {
     var filename = "result.txt";
     var element = document.createElement('a');
-    var data = document.getElementById("result").value;
+    var data = document.getElementById("result").innerText;
     if (data != "") {
         element.setAttribute('href', 'data:text/plain;charset=utf-8,' + data);
         element.setAttribute('download', filename);
@@ -79,6 +79,8 @@ function getPrediction() {
         url: "/predict/",
         data: img,
         success: function(data) {
+            var panal = document.getElementById("results-panal");
+            panal.style.display = "block"
             $('#result').text(data);
             console.log(screen.width * 0.4);
             document.getElementById("loader").style.display = "none";

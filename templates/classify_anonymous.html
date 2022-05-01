@@ -6,32 +6,87 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>ASAR</title>
+    <link rel="shortcut icon" href="/static/img/logo.ico" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link  href="https://cdn.jsdelivr.net/npm/bootstrap-steps@%5E1.0/dist/bootstrap-steps.min.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="static/css/style_classify.css">
     <link rel="stylesheet" href="../static/dist/cropper/cropper.css">
 </head>
 
-<body>
-    <div class="topnav">
-        <a href="/">Home</a>
-        <a class="active" href="/classify">Predict</a>
-        <a class="right" href="/">Login</a>
+<body class="container-fluid h5">
+    <nav class="navbar navbar-expand-lg navbar-dark shadow-sm" style="background-color: #233F82 !important;">
+      <div class="container-fluid">
+        <a href="/" class="navbar-brand">
+          <img src="/static/img/logo-nav.png" width="45" alt="" class="d-inline-block align-middle mr-2">
+          <span class="text-uppercase font-weight-bold">ASAR</span>
+        </a>
+
+        <button type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler"><span class="navbar-toggler-icon"></span></button>
+
+        <div id="navbarSupportedContent" class="collapse navbar-collapse">
+          <ul class="navbar-nav ml-auto">
+              <li class="nav-item active"><a href="/" class="nav-link">Home</a></li>
+            <li class="nav-item"><a href="/classify" class="nav-link">Predict</a></li>
+          </ul>
+          <div class="navbar-nav ms-auto">
+            <a href="/" class="nav-item nav-link">Login</a>
+          </div>
+        </div>
+      </div>
+    </nav>
+    <div class="text-center mt-3">
+        <h2>Analyzing and Recognizing your Manuscript.</h2>
+        <p class="text-muted">How it works?</p>
     </div>
-    <h1>ASAR Project</h1>
-    <p>Arabic Manuscript Analysis and Recognition project.</p>
-    <div id="loader" style="display:none;"></div>
-    <div class="controls">
+    <div class="row mb-5">
+      <div class="col-md-12">
+        <!-- /.Stepers Wrapper -->
+        <ul class="steps" style="overflow: hidden;">
+          <li class="step step-active">
+            <div class="step-content">
+              <span class="step-circle">1</span>
+              <span class="step-text">Upload</span>
+            </div>
+          </li>
+          <li class="step step">
+            <div class="step-content">
+              <span class="step-circle">2</span>
+              <span class="step-text">Crop</span>
+            </div>
+          </li>
+          <li class="step">
+            <div class="step-content">
+              <span class="step-circle">3</span>
+              <span class="step-text">Predict</span>
+            </div>
+          </li>
+          <li class="step">
+            <div class="step-content">
+              <span class="step-circle">4</span>
+              <span class="step-text">Results</span>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="controls form-group">
         <h2> Controls </h2>
-        <input type="button" id="clearButton" value="Clear" class="btn btn-primary btn-large btn-block"><br>
-        <input type="button" id="myButton" value="Predict" class="btn btn-primary btn-large btn-block"><br>
-        <input type="button" id="cropButton" class="btn btn-primary btn-large btn-block" value="Crop" /> <br>
-        <input type="file" id="imageLoader" name="imageLoader" accept="image/*" />
-        <br>
-        <h2> Output </h2>
-        <textarea id="result" ></textarea>
-        <br>
-        <br>
-        <input type="button" id="downloadButton" value="Download Result" class="btn btn-primary btn-large btn-block">
+        <input type="button" id="clearButton" value="Clear" class="btn btn-outline-danger mb-2" style="width: 50%;"><br>
+        <input type="button" id="cropButton" class="btn btn-outline-secondary mb-2" value="Crop" style="width: 50%;" /> <br>
+        <input type="button" id="myButton" value="Predict" class="btn btn-outline-primary mb-2" style="width: 50%;"><br>
+        <input type="file" class="form-control" id="imageLoader" name="imageLoader" accept="image/*" />
     </div>
+    <div class="mb-5" id="results-panal" style="margin-left: 27%;display: none">
+        <div class="card">
+          <div class="card-header">Results</div>
+          <div class="card-body">
+            <p class="card-text" id="result"></p>
+            <input type="button" id="downloadButton" value="Download Result" class="btn btn-primary">
+          </div>
+        </div>
+    </div>
+    <div id="loader" style="display:none;"></div>
     <canvas id="canvas"></canvas>
     <br>
     <!-- The Modal -->
@@ -55,6 +110,7 @@
         @2022 Built by SpaceCode Team. Powered by Flask and Keras.
     </footer>
     <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js'></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
     <script src='../static/dist/cropper/cropper.js'></script>
     <script src="{{ url_for('static',filename='js/drawing.js') }}"></script>
     <script src='../static/js/classify.js'></script>

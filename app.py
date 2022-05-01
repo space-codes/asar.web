@@ -120,7 +120,7 @@ def do_admin_login():
             login_user(user)
             s.close()
     else:
-        return (render_template('login.html', password=False))
+        return (render_template('index.html', password=False))
     return hub()
 
 @app.route('/logout')
@@ -134,13 +134,6 @@ def logout():
     session['logged_in'] = False
     session['user'] = ''
     return hub()
-
-@app.route('/signup')
-def signup():
-    ''' Load the signup page.
-
-    '''
-    return render_template('signup.html')
 
 @app.route('/guest')
 def guest():
@@ -176,10 +169,8 @@ def create_user():
             login_user(user)
             s.close()
             return render_template('home.html')
-        else:
-            return (render_template('signup.html', password=False))
     else:
-        return (render_template('signup.html', username=False))
+        return (render_template('index.html', username=False))
     return 'ok'
 
 # Hub page ------------------------------------------------------------------

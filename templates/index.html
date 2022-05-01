@@ -83,15 +83,15 @@
         </div>
       </div>
     </div>
-    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     {% if password == False %}
         <script type="text/javascript">
-            swal({ type: 'error', title: 'Login failed', text: "invalid username/password" })
+            Swal.fire({ icon: 'error', title: 'Login failed', text: "invalid username/password" })
         </script>
     {% endif %}
     {% if username == False %}
         <script type="text/javascript">
-            swal({ type: 'error', title: 'Register failed', text: "Username is already exists" })
+            Swal.fire({ icon: 'error', title: 'Register failed', text: "Username is already exists" })
         </script>
     {% endif %}
     <script src="https://kit.fontawesome.com/64d58efce2.js" crossorigin="anonymous"></script>

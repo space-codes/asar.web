@@ -21,13 +21,29 @@ function setDownload(pred_id){
 // Delete the prediction
 function deleteEntry(pred_id){
   var send = pred_id.toString();
-  $.ajax({
-    type: "POST",
-    url: "/delete_result/",
-    data: send,
-    success: function(data){
-      console.log(data)
-      location.reload();
-    }
-  });
+  Swal.fire({
+  title: 'Are you sure?',
+  text: "You won't be able to revert this!",
+  icon: 'warning',
+  showCancelButton: true,
+  confirmButtonColor: '#3085d6',
+  cancelButtonColor: '#d33',
+  confirmButtonText: 'Yes, delete it!'
+}).then((result) => {
+  if (result.isConfirmed) {
+      $.ajax({
+        type: "POST",
+        url: "/delete_result/",
+        data: send,
+        success: function(data){
+          Swal.fire(
+              'Deleted!',
+              'Your prediction has been deleted.',
+              'success'
+            )
+          location.reload();
+        }
+      });
+  }
+})
 }

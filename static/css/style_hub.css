@@ -44,7 +44,7 @@ body {
 /* Gallery */
 div.gal-container {
 max-width: 70%;
-margin: auto;
+margin-left: 10px;
 padding-left: 16px;
 background-color: #FFF;
 }
@@ -57,8 +57,8 @@ div.gallery {
     background-color: #FFFFFF;
     padding: 20px;
     margin: 25px;
-    width:150px;
-    height:300px;
+    width:170px;
+    height:310px;
 }
 
 div.gallery:hover {

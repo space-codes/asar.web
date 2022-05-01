@@ -36,11 +36,6 @@ function deleteEntry(pred_id){
         url: "/delete_result/",
         data: send,
         success: function(data){
-          Swal.fire(
-              'Deleted!',
-              'Your prediction has been deleted.',
-              'success'
-            )
           location.reload();
         }
       });

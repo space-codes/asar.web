@@ -7,7 +7,7 @@ import numpy as np
 import uuid
 import cv2
 import tensorflow as tf
-
+import pandas as pd
 
 '''This module is the main back-end, which handles classification and
     word/character extraction.
@@ -15,7 +15,10 @@ import tensorflow as tf
 global model
 #if load_phosc_model:
 model = build_phosc_model()
-model.load_weights('model/phosc-model.h5')
+model.load_weights('model/new_phosc-model.h5')
+#weights = model.get_weights()
+#df = pd.DataFrame(weights)
+#df.to_pickle('model/new_phosc_weights.pkl')
 #else:
 #    model = load_model('model/phoc-model.h5', custom_objects={'SpatialPyramidPooling2D': SpatialPyramidPooling2D})
 
@@ -30,7 +33,7 @@ def classify(img, transcripts):
     '''
 
     img = img_to_array(img)
-    img = tf.image.resize(img, [110, 110])
+    img = tf.image.resize(img, [80, 90])
     img = np.expand_dims(img, axis=0)
     y_pred=model.predict(img)
     y_pred=np.squeeze(np.concatenate((y_pred[0],y_pred[1]),axis=1))

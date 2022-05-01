@@ -97,7 +97,7 @@ def hub():
 
     '''
     if not session.get('logged_in'):
-        return render_template('login.html')
+        return render_template('index.html')
     else:
         return home()
 

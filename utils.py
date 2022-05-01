@@ -30,16 +30,17 @@ def get_comb_label(x):
 '''
 save image as a thumbnail
 '''
-def save_thumbnail(user, loc):
-        img = cv2.imread(loc)
+def save_thumbnail(user, img):
+        # img = cv2.imread(loc)
         max_height = 200
         if(img.shape[0] < img.shape[1]):
             img = np.rot90(img)
         hpercent = (max_height/float(img.shape[0]))
         wsize = int((float(img.shape[1])*float(hpercent)))
-        img = cv2.resize(img,(wsize,max_height))
+        img = cv2.resize(img, (wsize, max_height))
         newname = str(len(os.listdir('static/users/{}/'.format(user)))+1)
-        cv2.imwrite('static/users/{}/{}.png'.format(user,newname),img)
+        cv2.imwrite('static/users/{}/{}.png'.format(user, newname), img)
+        return 'static/users/{}/{}.png'.format(user, newname)
 
 '''
 save an image
@@ -71,9 +72,9 @@ def get_all_transcripts():
 
 def build_phosc_model():
     if K.image_data_format() == 'channels_first':
-        input_shapes = (3, 110, 110)
+        input_shapes = (3, 80, 90)
     else:
-        input_shapes = (110, 110, 3)
+        input_shapes = (80, 90, 3)
     inp = Input(shape=input_shapes)
     model = Conv2D(64, (3, 3), padding='same', activation='relu')(inp)
     model = Conv2D(64, (3, 3), padding='same', activation='relu')(model)

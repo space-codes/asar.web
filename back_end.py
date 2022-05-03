@@ -15,7 +15,7 @@ import pandas as pd
 global model
 #if load_phosc_model:
 model = build_phosc_model()
-model.load_weights('model/new_phosc-model.h5')
+model.load_weights('model/phosc-model.h5')
 #weights = model.get_weights()
 #df = pd.DataFrame(weights)
 #df.to_pickle('model/new_phosc_weights.pkl')
@@ -74,7 +74,7 @@ def get_result(path):
                 output += ' ' + res
             output += '\n'
     if output == '':
-        output = 'Classification error'
+        output = 'Classification Error'
     return output
 
 

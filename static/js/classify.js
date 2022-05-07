@@ -81,7 +81,7 @@ function getPrediction() {
         success: function(data) {
             var panal = document.getElementById("results-panal");
             panal.style.display = "block"
-            $('#result').text(data);
+            $('#result').html(data);
             console.log(screen.width * 0.4);
             document.getElementById("loader").style.display = "none";
         }

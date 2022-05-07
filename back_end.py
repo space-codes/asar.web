@@ -65,14 +65,26 @@ def get_result(path):
     if np.mean(img) == 255:
         output = ''
     transcripts = get_all_transcripts()
+    endCharacters = ['ة', 'ئ', 'ى', 'ه', 'م', 'ن', 'ل', 'ك', 'ق', 'ف', 'غ', 'ع', 'ض', 'ص', 'ش', 'س', 'خ', 'ح', 'ج', 'ث', 'ت', 'ب']
     lines = multi_line_ext(img)
     for line in lines:
         arr = words_extract(line)
         if line != []:
             for a in arr:
                 res = classify(a, transcripts)
-                output += ' ' + res
-            output += '\n'
+                # format string
+                lastChar = res[-1]
+                if len(res) == 1 and lastChar not in endCharacters:
+                    output += ' ' + res
+                else:
+                    if len(res) > 4 or lastChar in endCharacters:
+                        output += res + ' '
+                    else:
+                        if (lastChar == 'ا' or lastChar == 'أ') and len(res) > 2:
+                            output += res + ' '
+                        else:
+                            output += res
+            output += '<br>'
     if output == '':
         output = 'Classification Error'
     return output

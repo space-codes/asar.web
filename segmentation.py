@@ -17,9 +17,9 @@ def remove_dots(img):
         cc_width = stats[i, cv2.CC_STAT_WIDTH]
         cc_height = stats[i, cv2.CC_STAT_HEIGHT]
         y=int(centroids[i][1])
-        if ( y > 0.3*height and y < 0.7*height and cc_height >= 0.15 * height)or\
-                (cc_height >= 0.3 * height )or\
-                (cc_height >= 0.2 * height and y > 0.3*height):
+        if (y > 0.35 * height and y < 0.8 * height and cc_height >= 0.20 * height) or \
+                (cc_height >= 0.4 * height) or \
+                (cc_height >= 0.3 * height and y > 0.35 * height):
           new_img[labels == i] = 255
 
     return new_img
@@ -31,7 +31,7 @@ def words_extract(img):
 
     # preprocessing for word segmentation
     grey_img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    bin_img = cv2.adaptiveThreshold(grey_img, 255, cv2.ADAPTIVE_THRESH_MEAN_C, cv2.THRESH_BINARY_INV, 21, 20)
+    ret, bin_img = cv2.threshold(grey_img, 0, 255, cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU)
     final_thr = remove_dots(bin_img)
 
     # finding words contours

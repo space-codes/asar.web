@@ -30,7 +30,7 @@ alphabet_csv = "Arabic_alphabet.csv"
 
 alphabet_dict = create_alphabet_dictionary(alphabet_csv)
 csv_num_cols = get_number_of_columns(alphabet_csv)
-numpy_csv = np.genfromtxt(alphabet_csv, dtype=int, delimiter=",")
+numpy_csv = np.genfromtxt(alphabet_csv, dtype=int, encoding="utf-8-sig", delimiter=",")
 numpy_csv=np.delete(numpy_csv,0,1)
 
 # Input: A word segment(string)

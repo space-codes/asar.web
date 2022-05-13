@@ -1,6 +1,6 @@
 opencv-python>=4.5.4.58
 Flask>=2.0.2
-Flask-Login>=0.5.0
+flask-login>=0.5.0
 flask-swagger-ui>=3.36.0
 Werkzeug>=2.0.0
 SQLAlchemy>=1.4.27

@@ -7,16 +7,20 @@ import os
 def remove_dots(img):
     height = img.shape[0]
     width = img.shape[1]
+
     ret, labels, stats, centroids = cv2.connectedComponentsWithStats(
         img.astype(np.uint8), connectivity=8)
+
     new_img = np.zeros_like(img)
 
     for i in range(1, ret):
         cc_width = stats[i, cv2.CC_STAT_WIDTH]
         cc_height = stats[i, cv2.CC_STAT_HEIGHT]
-
-        if cc_width >= 0.2 * width or cc_height >= 0.2 * height:
-            new_img[labels == i] = 1
+        y=int(centroids[i][1])
+        if ( y > 0.3*height and y < 0.7*height and cc_height >= 0.15 * height)or\
+                (cc_height >= 0.3 * height )or\
+                (cc_height >= 0.2 * height and y > 0.3*height):
+          new_img[labels == i] = 255
 
     return new_img
 

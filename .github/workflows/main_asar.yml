@@ -34,7 +34,7 @@ jobs:
         run: |
           pip install gdown
           mkdir -p ~/model
-          gdown --id 1_O63LQ6heMpIHf6_QI4sZ94xRIgH_MSr -O ~/model --folder
+          gdown --id 1_O63LQ6heMpIHf6_QI4sZ94xRIgH_MSr -O ~/model/phosc-model.h5
         
       # Optional: Add step to run tests here (PyTest, Django test suites, etc.)
       

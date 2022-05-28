@@ -60,4 +60,4 @@ jobs:
         with:
           app-name: 'asar'
           slot-name: 'Production'
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_FD4280DA3FDC48A9AF5C909184AA41BB }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_A7832F116C8F421E90F43218D4D5E984 }}

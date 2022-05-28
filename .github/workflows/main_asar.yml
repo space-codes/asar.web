@@ -29,9 +29,6 @@ jobs:
       
       - name: Install dependencies
         run: pip install -r requirements.txt
-
-      - name: Install gdown
-        run: pip install gdown
         
       # Optional: Add step to run tests here (PyTest, Django test suites, etc.)
       
@@ -63,4 +60,4 @@ jobs:
         with:
           app-name: 'asar'
           slot-name: 'Production'
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_82BB8CB606C74EF79A0A3F56575EAF47 }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_FD4280DA3FDC48A9AF5C909184AA41BB }}

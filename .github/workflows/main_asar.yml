@@ -33,8 +33,8 @@ jobs:
       - name: Download model
         run: |
           pip install gdown
-          mkdir -p /model
-          gdown --id 1_O63LQ6heMpIHf6_QI4sZ94xRIgH_MSr -O /model --folder
+          mkdir -p ~/model
+          gdown --id 1_O63LQ6heMpIHf6_QI4sZ94xRIgH_MSr -O ~/model --folder
         
       # Optional: Add step to run tests here (PyTest, Django test suites, etc.)
       

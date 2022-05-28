@@ -20,7 +20,7 @@ jobs:
       - name: Set up Python version
         uses: actions/setup-python@v1
         with:
-          python-version: '3.9'
+          python-version: '3.7'
 
       - name: Create and start virtual environment
         run: |
@@ -29,12 +29,6 @@ jobs:
       
       - name: Install dependencies
         run: pip install -r requirements.txt
-
-      - name: Download model
-        run: |
-          pip install gdown
-          mkdir -p ~/model
-          gdown --id 1_O63LQ6heMpIHf6_QI4sZ94xRIgH_MSr -O ~/model/phosc-model.h5
         
       # Optional: Add step to run tests here (PyTest, Django test suites, etc.)
       
@@ -66,4 +60,4 @@ jobs:
         with:
           app-name: 'asar'
           slot-name: 'Production'
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_51A92CA5843C452F834CD3DB35912E3B }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_5717ADFC040343F5AF2357A64A7443FF }}

@@ -11,4 +11,4 @@ SQLAlchemy==1.4.27
 tensorflow==2.7.0
 tensorflow_addons==0.16.1
 Werkzeug==2.0.0
-gunicorn==20.1.0
+gunicorn==20.0.4

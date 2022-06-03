@@ -52,7 +52,7 @@ routed through this module to
 '''
 
 login_manager = LoginManager()
-engine = create_engine('sqlite:///asar.db', echo=True)
+engine = create_engine('sqlite:///asar.db', echo=True, connect_args={"check_same_thread": False})
 Session = sessionmaker(bind=engine)
 s = Session()
 app = Flask(__name__)
@@ -112,13 +112,13 @@ def do_admin_login():
     POST_USERNAME = str(request.form['username'])
     POST_PASSWORD = str(request.form['password'])
     result = s.query(User).filter(User.username.in_([POST_USERNAME])).first()
+    s.close()
     if result:
         if check_password_hash(result.password, POST_PASSWORD):
             session['logged_in'] = True
             session['user'] = POST_USERNAME
             user = load_user(POST_USERNAME)
             login_user(user)
-            s.close()
     else:
         return (render_template('index.html', password=False))
     return hub()
@@ -161,13 +161,13 @@ def create_user():
             user = User(POST_USERNAME,POST_PASSWORD)
             s.add(user)
             s.commit()
+            s.close()
             session['logged_in'] = True
             session['user'] = POST_USERNAME
             user = load_user(POST_USERNAME)
             if not os.path.exists('static/users/{}'.format(user.username)):
                 os.makedirs('static/users/{}'.format(user.username))
             login_user(user)
-            s.close()
             return render_template('home.html')
     else:
         return (render_template('index.html', username=False))

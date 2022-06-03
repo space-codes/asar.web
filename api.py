@@ -1,6 +1,6 @@
 import os
 import flask_login
-from flask import Blueprint, abort, request, session, Flask, jsonify
+from flask import Blueprint, request, session, Flask, jsonify
 from sqlalchemy import create_engine
 from api_views import *
 from models import User
@@ -18,7 +18,7 @@ import cv2
 
 
 api = Blueprint("api", __name__)
-engine = create_engine('sqlite:///asar.db', echo=True)
+engine = create_engine('sqlite:///asar.db', echo=True, connect_args={"check_same_thread": False})
 Session = sessionmaker(bind=engine)
 s = Session()
 login_manager = flask_login.LoginManager()
@@ -68,22 +68,22 @@ def api_user_register():
     except JSONDecodeError:
         return 'Malformed request', HTTP_400_BAD_REQUEST
     try:
-        username = data_dict['username']
-        password = data_dict['password']
-        confirm_password = data_dict['confirm_password']
+        username = str(data_dict['username'])
+        password = str(data_dict['password'])
+        confirm_password = str(data_dict['confirm_password'])
         res = s.query(User).filter(User.username.in_([username])).first()
         if res == None:
             if password == confirm_password:
                 user = User(username, password)
                 s.add(user)
                 s.commit()
+                s.close()
                 session['logged_in'] = True
                 session['user'] = username
                 user = load_user(username)
                 if not os.path.exists('static/users/{}'.format(user.username)):
                     os.makedirs('static/users/{}'.format(user.username))
                 flask_login.login_user(user)
-                s.close()
                 return 'Success', HTTP_200_OK
             else:
                 return 'Password not match the confirm password', HTTP_400_BAD_REQUEST
@@ -123,19 +123,21 @@ def api_user_login():
     except JSONDecodeError:
         return 'Malformed request', 400
     try:
-        username = data_dict['username']
-        password = data_dict['password']
-        result = s.query(User).filter(User.username.in_([password])).first()
-        if result:
-            if check_password_hash(result.password, password):
+        username = str(data_dict['username'])
+        password = str(data_dict['password'])
+        res = s.query(User).filter(User.username.in_([username])).first()
+        if res:
+            if check_password_hash(res.password, password):
                 session['logged_in'] = True
                 session['user'] = username
-                user = load_user(password)
+                user = load_user(username)
                 flask_login.login_user(user)
                 s.close()
                 return 'Success', 200
             else:
-                abort(HTTP_403_FORBIDDEN, 'Incorrect username or password!')
+                return 'Incorrect username or password!', HTTP_403_FORBIDDEN
+        else:
+            return 'User not exist!', HTTP_400_BAD_REQUEST
     except KeyError:
         return 'Malformed request', HTTP_400_BAD_REQUEST
 
@@ -274,6 +276,7 @@ def api_home():
     '''
     user = load_user(session['user'])
     predictions = s.query(Prediction).filter(Prediction.user == user.id).all()
+    s.close()
     pred_list = []
     for pred in predictions:
         pred_list.append({

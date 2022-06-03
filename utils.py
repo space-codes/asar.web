@@ -72,9 +72,9 @@ def get_all_transcripts():
 
 def build_phosc_model():
     if K.image_data_format() == 'channels_first':
-        input_shapes = (3, 80, 90)
+        input_shapes = (3, 70, 90)
     else:
-        input_shapes = (80, 90, 3)
+        input_shapes = (70, 90, 3)
     inp = Input(shape=input_shapes)
     model = Conv2D(64, (3, 3), padding='same', activation='relu')(inp)
     model = Conv2D(64, (3, 3), padding='same', activation='relu')(model)
@@ -99,13 +99,13 @@ def build_phosc_model():
     phosnet_op = Dropout(0.5)(phosnet_op)
     phosnet_op = Dense(4096, activation='relu')(phosnet_op)
     phosnet_op = Dropout(0.5)(phosnet_op)
-    phosnet_op = Dense(270, activation='relu', name="phosnet")(phosnet_op)
+    phosnet_op = Dense(180, activation='relu', name="phosnet")(phosnet_op)
 
     # PHOC component
     phocnet = Dense(4096, activation='relu')(model)
     phocnet = Dropout(0.5)(phocnet)
     phocnet = Dense(4096, activation='relu')(phocnet)
     phocnet = Dropout(0.5)(phocnet)
-    phocnet = Dense(730, activation='sigmoid', name="phocnet")(phocnet)
+    phocnet = Dense(505, activation='sigmoid', name="phocnet")(phocnet)
     model = Model(inputs=inp, outputs=[phosnet_op, phocnet])
     return model

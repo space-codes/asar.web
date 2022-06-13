@@ -215,7 +215,7 @@ buildNumber.properties
 **/nbproject/Package-*.bash
 build/
 nbbuild/
-dist/
+# dist/
 nbdist/
 .nb-gradle/
 

@@ -15,7 +15,9 @@ import codecs
 from utils import save_thumbnail
 from models import Prediction
 import cv2
+import logging
 
+logging.basicConfig(filename='api-logs.log', level=logging.DEBUG, format=f'%(asctime)s %(levelname)s %(name)s %(threadName)s : %(message)s')
 
 api = Blueprint("api", __name__)
 engine = create_engine('sqlite:///asar.db', echo=True, connect_args={"check_same_thread": False})
@@ -26,6 +28,7 @@ app = Flask(__name__)
 app.secret_key = 'SUPER SCRET KEY FOR ASSAR PROJECT'
 app.config['SESSION_TYPE'] = 'filesystem'
 login_manager.init_app(app)
+
 
 @login_manager.user_loader
 def load_user(username):

@@ -21,6 +21,7 @@ from flask import Flask, abort, request, make_response, jsonify
 import json
 from api import api as api_blueprint
 from api import *
+import traceback
 
 # Swagger API Docs Auto generation
 spec = APISpec(
@@ -179,8 +180,12 @@ def create_user():
 def home():
     '''Retrieve a users predictions and load the Hub page.
     '''
-    zipped = get_images()
-    return render_template('home.html', zipped=zipped)
+    try:
+        zipped = get_images()
+        return render_template('home.html', zipped=zipped)
+    except Exception as e:
+        #return "Oops!", e.__class__, "occurred."
+        return traceback.print_exc()
 
 def get_images():
     '''Load the currently logged in users prediction history.

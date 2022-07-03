@@ -1,6 +1,6 @@
 from flask import Flask, flash, redirect, render_template, request, session, abort
 from flask_swagger_ui import get_swaggerui_blueprint
-from flask_login import LoginManager, UserMixin, login_required, login_user, logout_user
+import flask_login
 from werkzeug.utils import secure_filename
 from back_end import *
 import codecs
@@ -51,7 +51,7 @@ spec = APISpec(
 routed through this module to
 '''
 
-login_manager = LoginManager()
+login_manager = flask_login.LoginManager()
 engine = create_engine('sqlite:///asar.db', echo=True, connect_args={"check_same_thread": False})
 Session = sessionmaker(bind=engine)
 s = Session()
@@ -118,19 +118,19 @@ def do_admin_login():
             session['logged_in'] = True
             session['user'] = POST_USERNAME
             user = load_user(POST_USERNAME)
-            login_user(user)
+            flask_login.login_user(user)
     else:
         return (render_template('index.html', password=False))
     return hub()
 
 @app.route('/logout')
-@login_required
+@flask_login.login_required
 def logout():
     '''Log out of the application.
 
     Logs a user out of the application and shows the login screen.
     '''
-    logout_user()
+    flask_login.logout_user()
     session['logged_in'] = False
     session['user'] = ''
     return hub()
@@ -167,7 +167,7 @@ def create_user():
             user = load_user(POST_USERNAME)
             if not os.path.exists('static/users/{}'.format(user.username)):
                 os.makedirs('static/users/{}'.format(user.username))
-            login_user(user)
+            flask_login.login_user(user)
             return render_template('home.html')
     else:
         return (render_template('index.html', username=False))
@@ -175,7 +175,7 @@ def create_user():
 
 # Hub page ------------------------------------------------------------------
 @app.route('/home')
-@login_required
+@flask_login.login_required
 def home():
     '''Retrieve a users predictions and load the Hub page.
     '''
@@ -337,5 +337,5 @@ with app.test_request_context():
     pass
 
 # We're good to go! Save this to a file for now.
-with open('static/swagger.json', 'w') as f:
-    json.dump(spec.to_dict(), f)
+#with open('static/swagger.json', 'w') as f:
+#    json.dump(spec.to_dict(), f)

@@ -188,16 +188,13 @@ def api_predict():
             application/json:
               schema: BasicSchema
     '''
-    try:
-        data_dict = json.loads(request.data.decode('utf-8'))
-    except JSONDecodeError:
-        return 'Malformed request', HTTP_400_BAD_REQUEST
     path = 'static/users/{}'.format(session['user'])
     if not os.path.exists(path):
         os.makedirs(path)
-    img_data = data_dict['image']
-    img_data = bytearray(img_data.encode('utf-8'))
-    convertImage(img_data, path)
+    img = request.files['image']
+    if not img.mimetype.startswith('image'):
+        return 'Error: Allow only image files', HTTP_400_BAD_REQUEST
+    convertImage(img, path)
     result = str(get_result(path + '/temp.png'))
     if session['user'] != 'guest':
         save_pred(result)
@@ -291,16 +288,16 @@ def api_home():
     return jsonify(results=pred_list), HTTP_200_OK
 
 # Decoding an image from base64 into raw representation
-def convertImage(imgData1, path):
+def convertImage(img, path):
     '''Decodes an image from base64.
 
     Args:
-        imgData1: The image to be decoded
+        img: The image to be decoded
         path: The location the decoded image is saved
     '''
-    img_str = re.search(b'base64,(.*)', imgData1).group(1)
+    # img_str = re.search(b'base64,(.*)', imgData1).group(1)
     with open(path + '/temp.png', 'wb') as output:
-        output.write(codecs.decode(img_str, 'base64'))
+        output.write(img.read())
 
 
 def save_pred(result):

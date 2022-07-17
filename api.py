@@ -136,7 +136,8 @@ def api_user_login():
                 user = load_user(username)
                 flask_login.login_user(user)
                 s.close()
-                return 'Success', 200
+                session_token = request.cookies['session']
+                return {'cookie': session_token}, 200
             else:
                 return 'Incorrect username or password!', HTTP_403_FORBIDDEN
         else:

@@ -33,7 +33,7 @@ def classify(img, transcripts):
     '''
 
     img = img_to_array(img)
-    img = tf.image.resize(img, [70, 90])
+    img = tf.image.resize(img, [80, 90])
     img = np.expand_dims(img, axis=0)
     y_pred=model.predict(img)
     y_pred=np.squeeze(np.concatenate((y_pred[0],y_pred[1]),axis=1))

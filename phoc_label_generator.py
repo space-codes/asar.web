@@ -46,7 +46,7 @@ def phoc_generate_label(word):
   word = word.lower()
   vector = []
   L = len(word)
-  for split in range(2, 5):
+  for split in range(2, 6):
     parts = L//split
     for mul in range(split-1):
       vector += generate_45(word[mul*parts:mul*parts+parts])

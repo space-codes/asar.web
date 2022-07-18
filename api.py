@@ -136,8 +136,7 @@ def api_user_login():
                 user = load_user(username)
                 flask_login.login_user(user)
                 s.close()
-                session_token = request.cookies['session']
-                return {'cookie': session_token}, 200
+                return 'Success', 200
             else:
                 return 'Incorrect username or password!', HTTP_403_FORBIDDEN
         else:
@@ -193,8 +192,6 @@ def api_predict():
     if not os.path.exists(path):
         os.makedirs(path)
     img = request.files['image']
-    if not img.mimetype.startswith('image'):
-        return 'Error: Allow only image files', HTTP_400_BAD_REQUEST
     convertImage(img, path)
     result = str(get_result(path + '/temp.png'))
     if session['user'] != 'guest':
